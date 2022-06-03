@@ -1,7 +1,7 @@
 <script>
   import WelcomeNavigator from "../components/WelcomeNavigator.svelte";
   import TitleBar from "../components/TitleBar.svelte";
-  import {getContext} from "svelte";
+  import { getContext } from "svelte";
   const placemarkService = getContext("PlacemarkService");
   placemarkService.logout();
   let activeItem = "home";

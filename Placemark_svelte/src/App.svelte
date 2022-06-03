@@ -33,7 +33,7 @@
       ],
     }),
     "/logout": Main,
-    "/*":  wrap({
+    "/*": wrap({
       component: Main,
       conditions: [
         (detail) => {

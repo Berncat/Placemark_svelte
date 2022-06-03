@@ -8,6 +8,8 @@
     <li class:is-active={"signup" === activeItem}>
       <a href="/#/signup">Sign up</a>
     </li>
-    <li class:is-active={"login" === activeItem}><a href="/#/login">Login</a></li>
+    <li class:is-active={"login" === activeItem}>
+      <a href="/#/login">Login</a>
+    </li>
   </ul>
 </div>

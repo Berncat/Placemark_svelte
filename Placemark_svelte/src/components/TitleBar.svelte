@@ -5,7 +5,7 @@
 {#if $user.email}
   <p class="has-text-right">Logged in: {$user.email}</p>
 {:else}
-<p class="has-text-right">Not Logged in</p>
+  <p class="has-text-right">Not Logged in</p>
 {/if}
 <div class="is-flex columns is-centered">
   <p class="title is-1 m-5">
