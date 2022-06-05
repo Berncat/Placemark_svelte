@@ -139,4 +139,73 @@ export class PlacemarkService {
       return false;
     }
   }
+
+  async getPlacemarksByUser() {
+    try {
+      const obj = JSON.parse(localStorage.getItem("placemark"));
+      const response = await axios.get(
+        this.baseUrl + "/api/placemarks/user/" + obj.id
+      );
+      return response.data;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async createPlacemark(id, name, lat, lon, desc, filter, other) {
+    try {
+      const newPlacemark = {
+        name: name,
+        lat: lat,
+        lon: lon,
+        desc: desc,
+        filter: filter,
+        other: other,
+      };
+      const obj = JSON.parse(localStorage.getItem("placemark"));
+      const response = await axios.post(
+        this.baseUrl + "/api/placemarks/user/" + obj.id + "/category/" + id,
+        newPlacemark
+      );
+      return response.data;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async deletePlacemark(id) {
+    try {
+      const response = await axios.delete(
+        this.baseUrl + "/api/placemarks/" + id
+      );
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async getPlacemark(id) {
+    try {
+      const response = await axios.get(this.baseUrl + "/api/categories/" + id);
+      return response.data;
+    } catch (error) {
+      return {};
+    }
+  }
+
+  async editPlacemark(name, filter, id) {
+    try {
+      const updatedCategory = {
+        name: name,
+        filter: filter,
+      };
+      const response = await axios.post(
+        this.baseUrl + "/api/categories/" + id,
+        updatedCategory
+      );
+      return response.data;
+    } catch (error) {
+      return false;
+    }
+  }
 }

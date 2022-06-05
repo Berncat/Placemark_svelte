@@ -7,9 +7,6 @@
     <li class:is-active={"dashboard" === activeItem}>
       <a href="/#/dashboard">Dashboard</a>
     </li>
-    <li class:is-active={"report" === activeItem}>
-      <a href="/#/report">Report</a>
-    </li>
     <li><a href="/#/logout">Log out</a></li>
   </ul>
 </div>

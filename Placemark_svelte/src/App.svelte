@@ -5,7 +5,7 @@
   import Login from "./pages/Login.svelte";
   import Signup from "./pages/Signup.svelte";
   import Dashboard from "./pages/Dashboard.svelte";
-  import Report from "./pages/Report.svelte";
+  import Placemarks from "./pages/Placemarks.svelte";
   import Router, { replace } from "svelte-spa-router";
   import { wrap } from "svelte-spa-router/wrap";
   import { user } from "./stores";
@@ -24,8 +24,8 @@
         },
       ],
     }),
-    "/report": wrap({
-      component: Report,
+    "/placemarks": wrap({
+      component: Placemarks,
       conditions: [
         (detail) => {
           return $user.loggedIn;

@@ -4,7 +4,6 @@
   const dispatch = createEventDispatcher();
   const placemarkService = getContext("PlacemarkService");
   let categoriesList = [];
-  let category = {};
   let errorMessage = "";
 
   onMount(async () => {
@@ -17,9 +16,16 @@
     });
   }
 
-  function editButton(id) {
+  function editButton(input) {
     dispatch("edit", {
-      id: id,
+      category: input,
+      status: true,
+    });
+  }
+
+  function viewButton(input) {
+    dispatch("view", {
+      category: input,
       status: true,
     });
   }
@@ -39,12 +45,17 @@
   <div class="panel-heading pr-3">
     <nav class="level">
       <!-- Left side -->
-      <div class="level-left">Categories</div>
-      <!-- Right side -->
-      <div class="level-right">
-        <button on:click={addButton} class="button is-dark"
-          >Add New Category</button
-        >
+      <div class="level-left">
+        <div class="level-item">Categories</div>
+        <div class="level-item">
+          <button on:click={addButton} class="button is-dark is-outlined">
+            <span class="icon">
+              <i class="fas fa-plus" />
+            </span>
+          </button>
+        </div>
+        <!-- Right side -->
+        <div class="level-right" />
       </div>
     </nav>
   </div>
@@ -69,18 +80,44 @@
         <!-- Right side -->
         <div class="level-right">
           <div class="buttons">
-            <a href="/#" class="button is-info">View</a>
             <button
-              on:click={() => editButton(category._id)}
-              class="button is-success">Edit</button
+              on:click={() => viewButton(category)}
+              class="button is-success"
             >
+              <span class="icon">
+                <i class="fas fa-eye" />
+              </span>
+            </button>
+            <button
+              on:click={() => editButton(category)}
+              class="button is-info"
+            >
+              <span class="icon">
+                <i class="fas fa-edit" />
+              </span>
+            </button>
             <button
               on:click={() => deleteCategory(category._id)}
-              class="button is-danger">Delete</button
+              class="button is-danger"
             >
+              <span class="icon">
+                <i class="fas fa-trash" />
+              </span>
+            </button>
           </div>
         </div>
       </nav>
     </div>
   {/each}
 </nav>
+
+{#if errorMessage}
+  <article class="message is-danger">
+    <div class="message-header">
+      <p>Error</p>
+    </div>
+    <div class="message-body">
+      {errorMessage}
+    </div>
+  </article>
+{/if}

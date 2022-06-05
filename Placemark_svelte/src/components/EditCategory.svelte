@@ -1,22 +1,16 @@
 <script>
   import { createEventDispatcher, getContext, onMount } from "svelte";
-  export let id;
+  import { replace } from "svelte-spa-router";
+  export let category;
   const dispatch = createEventDispatcher();
   const placemarkService = getContext("PlacemarkService");
-  let category = {};
-  let name = "";
-  let filterName = "";
+  let name = category.name;
+  let filterName = category.filter;
+  let id = category._id;
   let errorMessage = "";
 
-  onMount(async () => {
-    category = await placemarkService.getCategory(id);
-    name = category.name;
-    filterName = category.filter;
-  });
-
-  function viewButton() {
-    dispatch("view", {
-      id: "",
+  function backButton() {
+    dispatch("back", {
       status: true,
     });
   }
@@ -25,7 +19,6 @@
     let success = await placemarkService.editCategory(name, filterName, id);
     if (success) {
       dispatch("updated", {
-        id: "",
         status: true,
       });
     } else {
@@ -43,7 +36,7 @@
       <div class="level-left">Edit Category</div>
       <!-- Right side -->
       <div class="level-right">
-        <button on:click={viewButton} class="button is-dark"
+        <button on:click={backButton} class="button is-dark"
           >Back to view Categories</button
         >
       </div>
@@ -51,7 +44,7 @@
   </div>
   <div class="field-body panel-block">
     <div class="field">
-      <label class="label" for="name">Name</label>
+      <label class="label" for="name">Edit Name</label>
       <input
         bind:value={name}
         class="input"
@@ -59,10 +52,11 @@
         name="name"
         placeholder="Enter name"
         type="text"
+        required
       />
     </div>
     <div class="field">
-      <label class="label" for="name">Filter Name</label>
+      <label class="label" for="filter">Edit Filter Name</label>
       <input
         bind:value={filterName}
         class="input"
@@ -70,20 +64,22 @@
         name="filter"
         placeholder="Enter filter description"
         type="text"
+        required
       />
     </div>
   </div>
   <div class="panel-block">
     <button class="button is-info is-fullwidth"> Submit </button>
   </div>
-  {#if errorMessage}
-    <article class="message is-danger">
-      <div class="message-header">
-        <p>Error</p>
-      </div>
-      <div class="message-body">
-        {errorMessage}
-      </div>
-    </article>
-  {/if}
 </form>
+
+{#if errorMessage}
+  <article class="message is-danger">
+    <div class="message-header">
+      <p>Error</p>
+    </div>
+    <div class="message-body">
+      {errorMessage}
+    </div>
+  </article>
+{/if}

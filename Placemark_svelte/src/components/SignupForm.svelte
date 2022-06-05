@@ -38,6 +38,7 @@
             type="text"
             placeholder="Enter first name"
             name="firstName"
+            required
           />
         </div>
         <div class="field">
@@ -49,6 +50,7 @@
             type="text"
             placeholder="Enter last name"
             name="lastName"
+            required
           />
         </div>
       </div>
@@ -59,9 +61,10 @@
         bind:value={email}
         id="email"
         class="input"
-        type="text"
+        type="email"
         placeholder="Enter email"
         name="email"
+        required
       />
     </div>
     <div class="field">
@@ -73,21 +76,23 @@
         type="password"
         placeholder="Enter Password"
         name="password"
+        required
       />
     </div>
     <br />
     <div class="field is-grouped">
       <button class="button is-info is-fullwidth">Submit</button>
     </div>
-    {#if errorMessage}
-      <article class="message is-danger">
-        <div class="message-header">
-          <p>Error</p>
-        </div>
-        <div class="message-body">
-          {errorMessage}
-        </div>
-      </article>
-    {/if}
   </form>
 </section>
+
+{#if errorMessage}
+<article class="message is-danger">
+  <div class="message-header">
+    <p>Error</p>
+  </div>
+  <div class="message-body">
+    {errorMessage}
+  </div>
+</article>
+{/if}

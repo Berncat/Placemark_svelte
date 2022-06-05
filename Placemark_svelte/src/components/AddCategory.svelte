@@ -1,14 +1,13 @@
 <script>
   import { createEventDispatcher, getContext } from "svelte";
-
   const dispatch = createEventDispatcher();
   const placemarkService = getContext("PlacemarkService");
   let name = "";
   let filterName = "";
   let errorMessage = "";
 
-  function viewButton() {
-    dispatch("view", {
+  function backButton() {
+    dispatch("back", {
       status: true,
     });
   }
@@ -34,7 +33,7 @@
       <div class="level-left">Add Category</div>
       <!-- Right side -->
       <div class="level-right">
-        <button on:click={viewButton} class="button is-dark"
+        <button on:click={backButton} class="button is-dark"
           >Back to view Categories</button
         >
       </div>
@@ -50,10 +49,11 @@
         name="name"
         placeholder="Enter name"
         type="text"
+        required
       />
     </div>
     <div class="field">
-      <label class="label" for="name">Filter Name</label>
+      <label class="label" for="filter">Filter Name</label>
       <input
         bind:value={filterName}
         class="input"
@@ -61,20 +61,22 @@
         name="filter"
         placeholder="Enter filter description"
         type="text"
+        required
       />
     </div>
   </div>
   <div class="panel-block">
     <button class="button is-info is-fullwidth"> Submit </button>
   </div>
-  {#if errorMessage}
-    <article class="message is-danger">
-      <div class="message-header">
-        <p>Error</p>
-      </div>
-      <div class="message-body">
-        {errorMessage}
-      </div>
-    </article>
-  {/if}
 </form>
+
+{#if errorMessage}
+<article class="message is-danger">
+  <div class="message-header">
+    <p>Error</p>
+  </div>
+  <div class="message-body">
+    {errorMessage}
+  </div>
+</article>
+{/if}
