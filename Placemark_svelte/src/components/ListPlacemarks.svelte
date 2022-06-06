@@ -1,50 +1,32 @@
 <script>
   import { createEventDispatcher, getContext, onMount } from "svelte";
-  import { push } from "svelte-spa-router";
 
-  export let category;
-  const dispatch = createEventDispatcher();
   const placemarkService = getContext("PlacemarkService");
+  let categoriesList = [];
   let placemarksList = [];
   let placemarks = [];
-  let selected;
+  let selectedCategory = "";
+  let category = {};
   let errorMessage = "";
 
   onMount(async () => {
+    categoriesList = await placemarkService.getCategoriesByUser();
     placemarksList = await placemarkService.getPlacemarksByUser();
-    placemarks = placemarksList.filter(
-      (placemark) => placemark.categoryId == category._id
-    );
   });
 
-  function filter() {
+  function filterCategory() {
+    category = categoriesList.find(
+      (category) => selectedCategory == category.name
+    );
     placemarks = placemarksList.filter(
       (placemark) => placemark.categoryId == category._id
     );
-    if (selected !== "clear") {
-      placemarks = placemarks.filter(
-        (placemark) => placemark.filter == selected
-      );
-    }
-  }
-
-  function addButton(input) {
-    dispatch("add", {
-      category: input,
-      status: true,
-    });
-  }
-
-  function backButton() {
-    dispatch("back", {
-      status: true,
-    });
   }
 
   async function deletePlacemark(id) {
     let success = await placemarkService.deletePlacemark(id);
     if (success) {
-      category = await placemarkService.getCategory(category._id);
+      categoriesList = await placemarkService.getCategoriesByUser();
       placemarksList = await placemarkService.getPlacemarksByUser();
       placemarks = await placemarksList.filter(
         (placemark) => placemark.categoryId == category._id
@@ -61,30 +43,19 @@
     <nav class="level">
       <!-- Left side -->
       <div class="level-left">
-        <div class="level-item">{category.name}</div>
-        <div class="level-item">
-          <button on:click={() => addButton(category)}  class="button is-dark is-outlined">
-            <span class="icon">
-              <i class="fas fa-plus" />
-            </span>
-          </button>
-        </div>
+        <div class="level-item">Placemarks</div>
       </div>
       <!-- Right side -->
       <div class="level-right">
         <div class="level-item">
-          <p class="title is-6">Filter:</p>
-        </div>
-        <div class="level-item">
-          <form class="mb-0" on:submit|preventDefault={filter}>
+          <form class="mb-0" on:submit|preventDefault={filterCategory}>
             <div class="field has-addons">
               <div class="control">
                 <div class="select">
-                  <select bind:value={selected}>
-                    {#each category.filterList as filter}
-                      <option value={filter}>{filter}</option>
+                  <select bind:value={selectedCategory}>
+                    {#each categoriesList as category}
+                      <option value={category.name}>{category.name}</option>
                     {/each}
-                    <option value="clear">Clear Filter</option>
                   </select>
                 </div>
               </div>
@@ -98,11 +69,6 @@
             </div>
           </form>
         </div>
-        <div class="level-item">
-          <button on:click={backButton} class="button is-dark"
-            >Back to view Categories</button
-          >
-        </div>
       </div>
     </nav>
   </div>
@@ -114,7 +80,7 @@
           <th>Latitude</th>
           <th>Longitude</th>
           <th>Description</th>
-          <th>{category.filter}</th>
+          <th>Category</th>
           <th>Delete</th>
         </tr>
       </thead>
@@ -125,7 +91,7 @@
             <td>{placemark.lat}</td>
             <td>{placemark.lon}</td>
             <td>{placemark.desc}</td>
-            <td>{placemark.filter}</td>
+            <td>{placemark.categoryName}</td>
             <td>
               <button
                 on:click={() => deletePlacemark(placemark._id)}

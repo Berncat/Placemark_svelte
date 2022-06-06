@@ -5,12 +5,15 @@
   import Login from "./pages/Login.svelte";
   import Signup from "./pages/Signup.svelte";
   import Dashboard from "./pages/Dashboard.svelte";
-  import Placemarks from "./pages/Placemarks.svelte";
+  import Report from "./pages/Report.svelte";
+  import Map from "./pages/Map.svelte";
+  import Charts from "./pages/Charts.svelte";
+  import Images from "./pages/Images.svelte";
   import Router, { replace } from "svelte-spa-router";
   import { wrap } from "svelte-spa-router/wrap";
   import { user } from "./stores";
 
-  setContext("PlacemarkService", new PlacemarkService("http://localhost:4000"));
+  setContext("PlacemarkService", new PlacemarkService("http://ec2-54-84-155-248.compute-1.amazonaws.com"));
 
   let routes = {
     "/": Main,
@@ -24,8 +27,32 @@
         },
       ],
     }),
-    "/placemarks": wrap({
-      component: Placemarks,
+    "/report": wrap({
+      component: Report,
+      conditions: [
+        (detail) => {
+          return $user.loggedIn;
+        },
+      ],
+    }),
+    "/map": wrap({
+      component: Map,
+      conditions: [
+        (detail) => {
+          return $user.loggedIn;
+        },
+      ],
+    }),
+    "/charts": wrap({
+      component: Charts,
+      conditions: [
+        (detail) => {
+          return $user.loggedIn;
+        },
+      ],
+    }),
+    "/images": wrap({
+      component: Images,
       conditions: [
         (detail) => {
           return $user.loggedIn;

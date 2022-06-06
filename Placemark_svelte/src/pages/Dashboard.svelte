@@ -1,66 +1,27 @@
 <script>
   import TitleBar from "../components/TitleBar.svelte";
   import MainNavigator from "../components/MainNavigator.svelte";
-  import ListCategories from "../components/ListCategories.svelte";
-  import AddCategory from "../components/AddCategory.svelte";
-  import EditCategory from "../components/EditCategory.svelte";
-  import ListPlacemarks from "../components/ListPlacemarks.svelte";
   import AddPlacemark from "../components/AddPlacemark.svelte";
-
+  import AddCategory from "../components/AddCategory.svelte";
+  import PlacemarkMap from "../components/PlacemarkMap.svelte";
   let activeItem = "dashboard";
-  let add = false;
-  let edit = false;
-  let view = false;
-  let addPM = false;
-  let category = {};
 
-  function back() {
-    add = false;
-    edit = false;
-    view = false;
-    addPM = false;
-  }
+  let placemarkMap = null;
 
-  function addComponent() {
-    add = !add;
-  }
-
-  function editComponent(event) {
-    edit = !edit;
-    if (event.detail.category) {
-      category = event.detail.category;
-    } else category = {};
-  }
-
-  function viewComponent(event) {
-    view = !view;
-    if (event.detail.category) {
-      category = event.detail.category;
-    } else category = {};
-  }
-
-  function addPMComponent(event) {
-    addPM = !addPM;
-    if (event.detail.category) {
-      category = event.detail.category;
-    } else category = {};
+  function markerAdded(event) {
+    placemarkMap.addNewPlacemarker(event.detail.placemark);
   }
 </script>
 
 <TitleBar />
 <MainNavigator {activeItem} />
-{#if add}
-  <AddCategory on:back={back} on:added={addComponent} />
-{:else if edit}
-  <EditCategory {category} on:back={back} on:updated={editComponent} />
-{:else if addPM}
-  <AddPlacemark {category} on:back={back} />
-{:else if view}
-  <ListPlacemarks {category} on:back={back} on:add={addPMComponent}/>
-{:else}
-  <ListCategories
-    on:add={addComponent}
-    on:view={viewComponent}
-    on:edit={editComponent}
-  />
-{/if}
+
+<section class="columns">
+  <div class="column">
+    <PlacemarkMap bind:this={placemarkMap} />
+  </div>
+  <div class="column">
+    <AddPlacemark on:message={markerAdded} />
+    <AddCategory />
+  </div>
+</section>

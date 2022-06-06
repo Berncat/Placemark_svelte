@@ -87,11 +87,10 @@ export class PlacemarkService {
     }
   }
 
-  async createCategory(name, filter) {
+  async createCategory(name) {
     try {
       const newCategory = {
         name: name,
-        filter: filter,
       };
       const obj = JSON.parse(localStorage.getItem("placemark"));
       const response = await axios.post(
@@ -152,15 +151,13 @@ export class PlacemarkService {
     }
   }
 
-  async createPlacemark(id, name, lat, lon, desc, filter, other) {
+  async createPlacemark(id, placemark) {
     try {
       const newPlacemark = {
-        name: name,
-        lat: lat,
-        lon: lon,
-        desc: desc,
-        filter: filter,
-        other: other,
+        name: placemark.name,
+        lat: placemark.lat,
+        lon: placemark.lon,
+        desc: placemark.desc,
       };
       const obj = JSON.parse(localStorage.getItem("placemark"));
       const response = await axios.post(

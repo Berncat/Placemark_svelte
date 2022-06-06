@@ -1,62 +1,48 @@
 <script>
-  import { createEventDispatcher, getContext } from "svelte";
-  export let category;
+  import { createEventDispatcher, getContext, onMount } from "svelte";
+  import { push } from "svelte-spa-router";
   const dispatch = createEventDispatcher();
   const placemarkService = getContext("PlacemarkService");
   let name = "";
   let lat = "";
   let lon = "";
   let desc = "";
-  let selected;
-  let other = "";
+  let selectedCategory = "";
+  let categoriesList = [];
   let errorMessage = "";
+  let successMessage = "";
 
-  function backButton() {
-    dispatch("back", {
-      status: true,
-    });
-  }
+  onMount(async () => {
+    categoriesList = await placemarkService.getCategoriesByUser();
+  });
 
   async function createPlacemark() {
+    const category = categoriesList.find(
+      (category) => selectedCategory == category.name
+    );
+    const placemark = {
+      name: name,
+      lat: lat,
+      lon: lon,
+      desc: desc,
+    };
     let success = await placemarkService.createPlacemark(
       category._id,
-      name,
-      lat,
-      lon,
-      desc,
-      selected,
-      other
+      placemark
     );
-    if (success) {
-      category = await placemarkService.getCategory(category._id);
-      dispatch("back", {
-        status: true,
-      });
-    } else {
-      name = "";
-      lat = "";
-      lon = "";
-      desc = "";
-      selected;
-      other = "";
+    if (!success) {
       errorMessage = "Error creating placemark";
+      return;
     }
+    successMessage = `${placemark.name} added successfully`;
+    dispatch("message", {
+      placemark: placemark,
+    });
   }
 </script>
 
 <form on:submit|preventDefault={createPlacemark} class="panel">
-  <div class="panel-heading pr-3">
-    <nav class="level">
-      <!-- Left side -->
-      <div class="level-left">{category.name} / Add Placemark</div>
-      <!-- Right side -->
-      <div class="level-right">
-        <button on:click={backButton} class="button is-dark"
-          >Back to view Categories</button
-        >
-      </div>
-    </nav>
-  </div>
+  <p class="panel-heading">Add Placemark</p>
   <div class="field-body panel-block">
     <div class="field">
       <label class="label" for="name">Name</label>
@@ -70,6 +56,20 @@
         required
       />
     </div>
+    <div class="field is-fullwidth">
+      <label class="label" for="selectedCategory">Category</label>
+      <div class="control is-expanded">
+        <div class="select is-fullwidth">
+          <select bind:value={selectedCategory} required>
+            {#each categoriesList as category}
+              <option>{category.name}</option>
+            {/each}
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="field-body panel-block">
     <div class="field">
       <label class="label" for="lat">Latitude</label>
       <input
@@ -103,32 +103,6 @@
   </div>
   <div class="field-body panel-block">
     <div class="field">
-      <label class="label" for="filter">{category.filter}</label>
-      <div class="control is-expanded">
-        <div class="select is-fullwidth">
-          <select bind:value={selected}>
-            {#each category.filterList as filter}
-              <option value={filter}>{filter}</option>
-            {/each}
-            <option value="other">Other</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label" for="other">If other selected enter here</label>
-      <input
-        bind:value={other}
-        class="input"
-        id="other"
-        name="other"
-        placeholder="Enter other"
-        type="text"
-      />
-    </div>
-  </div>
-  <div class="field-body panel-block">
-    <div class="field">
       <label class="label" for="desc">Description</label>
       <textarea
         bind:value={desc}
@@ -144,3 +118,25 @@
     <button class="button is-info is-fullwidth"> Submit </button>
   </div>
 </form>
+
+{#if errorMessage}
+  <article class="message is-danger">
+    <div class="message-header">
+      <p>Error</p>
+    </div>
+    <div class="message-body">
+      {errorMessage}
+    </div>
+  </article>
+{/if}
+
+{#if successMessage}
+  <article class="message is-success">
+    <div class="message-header">
+      <p>Added</p>
+    </div>
+    <div class="message-body">
+      {successMessage}
+    </div>
+  </article>
+{/if}
