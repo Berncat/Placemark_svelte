@@ -36,7 +36,7 @@
     }
     successMessage = `${placemark.name} added successfully`;
     dispatch("message", {
-      placemark: placemark,
+      placemark: success,
     });
   }
 </script>

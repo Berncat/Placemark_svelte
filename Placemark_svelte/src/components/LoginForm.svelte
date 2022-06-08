@@ -18,6 +18,16 @@
       errorMessage = "Invalid Credentials";
     }
   }
+
+  async function oauth() {
+    let success = await placemarkService.oauth();
+    console.log(success)
+    if (success) {
+      push("/dashboard");
+    } else {
+      errorMessage = "Error Authenticating";
+    }
+  }
 </script>
 
 <section class="content">
@@ -51,6 +61,13 @@
       <button class="button is-info is-fullwidth">Submit</button>
     </div>
   </form>
+</section>
+<section class="content">
+  <div>
+    <hr />
+    <button on:click={oauth} class="button is-danger is-fullwidth" >
+      <i class="fab fa-google"></i>oogle Login</button>
+  </div>
 </section>
 
 {#if errorMessage}

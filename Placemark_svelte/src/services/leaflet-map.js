@@ -1,4 +1,6 @@
 import * as L from "leaflet";
+import { WeatherService } from "../services/weather-service";
+const weather = new WeatherService("93d7bef1b020c5c231ee18feaebf0a70");
 
 export class LeafletMap {
   imap = {};
@@ -32,6 +34,7 @@ export class LeafletMap {
       layers: [defaultLayer],
     });
   }
+
 
   addLayer(title, layer) {
     this.overlays[title] = layer;
@@ -72,6 +75,11 @@ export class LeafletMap {
       popup.setContent(popupText);
       marker.bindPopup(popup, {closeButton: false});
     }
+    marker.on('dblclick', async function(){
+      const lat = location.lat
+      const lon = location.lng
+      alert(await weather.getWeather(lat, lon));
+    });
     if (!this.overlays[layerTitle]) {
       group = L.layerGroup([]);
       this.overlays[layerTitle] = group;

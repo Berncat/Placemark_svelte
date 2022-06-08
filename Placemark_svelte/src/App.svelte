@@ -13,7 +13,7 @@
   import { wrap } from "svelte-spa-router/wrap";
   import { user } from "./stores";
 
-  setContext("PlacemarkService", new PlacemarkService("http://ec2-54-84-155-248.compute-1.amazonaws.com"));
+  setContext("PlacemarkService", new PlacemarkService("https://place-mark.net"));
 
   let routes = {
     "/": Main,
