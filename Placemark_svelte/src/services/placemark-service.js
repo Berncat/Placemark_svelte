@@ -75,6 +75,35 @@ export class PlacemarkService {
     }
   }
 
+  async oauth() {
+    try {
+      const response = await axios.get(
+        `${this.baseUrl}/api/users/oauth`
+      );
+      axios.defaults.headers.common["Authorization"] =
+        "Bearer " + response.data.token;
+      if (response.data.success) {
+        console.log("got here")
+        user.set({
+          email: response.data.email,
+          id: response.data.userId,
+          token: response.data.token,
+          loggedIn: true,
+        });
+        localStorage.placemark = JSON.stringify({
+          email: response.data.email,
+          id: response.data.userId,
+          token: response.data.token,
+          loggedIn: true,
+        });
+        return true;
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async getCategoriesByUser() {
     try {
       const obj = JSON.parse(localStorage.getItem("placemark"));
